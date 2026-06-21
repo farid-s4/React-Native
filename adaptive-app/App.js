@@ -20,6 +20,7 @@ export default function App() {
       role: "Software Engineer",
       avatar: "https://i.pravatar.cc/150?img=3",
       status: "true",
+      badge: "Team Lead",
     },
     {
       id: "2",
@@ -28,6 +29,7 @@ export default function App() {
       role: "UI/UX Designer",
       avatar: "https://i.pravatar.cc/150?img=5",
       status: "true",
+      badge: "Senior Designer",
     },
     {
       id: "3",
@@ -36,6 +38,7 @@ export default function App() {
       role: "DevOps Engineer",
       avatar: "https://i.pravatar.cc/150?img=11",
       status: "false",
+      badge: "Infrastructure Specialist",
     },
     {
       id: "4",
@@ -44,6 +47,7 @@ export default function App() {
       role: "Product Manager",
       avatar: "https://i.pravatar.cc/150?img=9",
       status: "true",
+      badge: "Project Coordinator",
     },
     {
       id: "5",
@@ -52,11 +56,54 @@ export default function App() {
       role: "QA Automation",
       avatar: "https://i.pravatar.cc/150?img=12",
       status: "false",
+      badge: "Testing Lead",
+    },
+    {
+      id: "6",
+      name: "Emily Davis",
+      age: 29,
+      role: "Data Scientist",
+      avatar: "https://i.pravatar.cc/150?img=15",
+      status: "true",
+      badge: "Analytics Expert",
+    },
+    {
+      id: "7",
+      name: "David Wilson",
+      age: 38,
+      role: "Backend Developer",
+      avatar: "https://i.pravatar.cc/150?img=18",
+      status: "true",
+      badge: "API Specialist",
+    },
+    {
+      id: "8",
+      name: "Olivia Martinez",
+      age: 31,
+      role: "Frontend Developer",
+      avatar: "https://i.pravatar.cc/150?img=20",
+      status: "false",
+      badge: "UI Developer",
     },
   ];
   const { width, height } = useWindowDimensions();
   const [selectedUser, setSelectedUser] = useState(DATA);
-  console.log(DATA);
+  const [users, setUsers] = useState(DATA);
+  const [refreshing, setRefreshing] = useState(false);
+
+  function deleteSelectedUser() {
+    const newData = DATA.filter((user) => user.id !== selectedUser);
+    setUsers(newData);
+  }           
+  function onRefresh() {
+    setRefreshing(true);
+    setUsers([]); // Сделал чисто для вида обновления
+    setTimeout(() => {
+      setUsers(DATA);
+      setRefreshing(false);
+    }, 1000);
+  }  
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -76,24 +123,35 @@ export default function App() {
         }
         ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
         contentContainerStyle={styles.userList}
-        data={DATA}
-        key={height>width ? 1 : 2}
+        data={users}
+        key={height > width ? 1 : 2}
         keyExtractor={(item) => item.id}
-        numColumns={height>width ? 1 : 2}
-        renderItem={({ item }) => (
-          <Pressable onPress={() => setSelectedUser(item.id)}>
-            <ProfileCard
-              name={item.name}
-              age={item.age}
-              role={item.role}
-              avatar={item.avatar}
-              status={item.status}
-              cardBackgroundColor={
-                selectedUser === item.id ? "#0077ff27" : "#FFFFFF"
-              }
-            />
-          </Pressable>
-        )}
+        numColumns={height > width ? 1 : 2}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
+        renderItem={({ item }) => {
+          return (
+            <Pressable onPress={() => setSelectedUser(item.id)}>
+              <ProfileCard
+                name={item.name}
+                age={item.age}
+                role={item.role}
+                avatar={item.avatar}
+                status={item.status}
+                cardBackgroundColor={
+                  selectedUser === item.id ? "#0077ff27" : "#FFFFFF"
+                }
+                badge={item.badge}
+              />
+              {selectedUser === item.id && (
+                <Pressable onPress={deleteSelectedUser}>
+                  <Text style={styles.deleteButton}>Delete selected user</Text>
+                </Pressable>
+              )}
+            </Pressable>
+          );
+          
+        }}
       />
     </View>
   );
@@ -103,11 +161,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    paddingTop: 50,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
   },
   userList: {
-    margin: 15,
     flexGrow: 1,
     alignItems: "center",
     gap: 20,
@@ -132,5 +190,13 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     paddingVertical: 2,
     marginVertical: 5,
+  },
+  deleteButton: {
+    backgroundColor: "red",
+    color: "white",
+    padding: 10,
+    borderRadius: 5,
+    textAlign: "center",
+    marginTop: 10,
   },
 });

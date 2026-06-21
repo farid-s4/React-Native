@@ -7,9 +7,10 @@ export default function ProfileCard({
   avatar,
   status,
   cardBackgroundColor,
+  badge,
 }) {
   return (
-    <View style={[styles.card,{ backgroundColor: cardBackgroundColor }]}>
+    <View style={[styles.card, { backgroundColor: cardBackgroundColor }]}>
       <ImageBackground
         source={{ uri: avatar }}
         style={styles.avatar}
@@ -22,6 +23,9 @@ export default function ProfileCard({
           ]}
         />
       </ImageBackground>
+      <View style={styles.badge}>
+          <Text style={styles.badgeText}>{badge}</Text>
+        </View>
       <View style={styles.textCard}>
         <Text style={styles.name}>Name: {name}</Text>
         <Text style={styles.info}>{age} years old</Text>
@@ -38,7 +42,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
-    width: 300,
+    width: 350,
   },
   textCard: {
     marginLeft: 15,
@@ -66,5 +70,19 @@ const styles = StyleSheet.create({
   info: {
     fontSize: 14,
     color: "#666",
+  },
+  badge: {
+    position: "absolute",
+    top: 5,
+    right: 10,
+    backgroundColor: "#0077ffc4",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 5,
+  },
+  badgeText: {
+    color: "#ffffff",
+    fontSize: 10,
+    fontWeight: "bold",
   },
 });
